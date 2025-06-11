@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>CRUD Greetings</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+  <div class="container py-4">
+    <h1 class="mb-4">CRUD Greetings</h1>
+    <form id="addForm" class="row g-2 mb-3">
+      <div class="col-auto">
+        <input type="text" id="newMessage" class="form-control" placeholder="Nuevo saludo" required>
+      </div>
+      <div class="col-auto">
+        <button type="submit" class="btn btn-primary">Agregar</button>
+      </div>
+    </form>
+    <div class="table-responsive">
+      <table class="table table-bordered align-middle bg-white">
+        <thead class="table-light">
+          <tr>
+            <th>ID</th>
+            <th>Mensaje</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="greetingsTable"></tbody>
+      </table>
+    </div>
+  </div>
+  <script>
+    const apiUrl = 'http://localhost:3000/greetings';
+
+    function fetchGreetings() {
+      fetch(apiUrl)
+        .then(res => res.json())
+        .then(data => {
+          const table = document.getElementById('greetingsTable');
+          table.innerHTML = '';
+          data.forEach(greet => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+              <td>${greet.id}</td>
+              <td>
+                <span id="msg-${greet.id}">${greet.message}</span>
+                <input type="text" id="edit-${greet.id}" value="${greet.message}" class="form-control form-control-sm d-none mt-1">
+              </td>
+              <td>
+                <button onclick="showEdit(${greet.id})" class="btn btn-sm btn-warning me-1">Editar</button>
+                <button onclick="deleteGreeting(${greet.id})" class="btn btn-sm btn-danger me-1">Eliminar</button>
+                <button onclick="saveEdit(${greet.id})" style="display:none;" id="save-${greet.id}" class="btn btn-sm btn-success me-1">Guardar</button>
+                <button onclick="cancelEdit(${greet.id})" style="display:none;" id="cancel-${greet.id}" class="btn btn-sm btn-secondary">Cancelar</button>
+              </td>
+            `;
+            table.appendChild(row);
+          });
+        });
+    }
+
+    document.getElementById('addForm').onsubmit = function(e) {
+      e.preventDefault();
+      const message = document.getElementById('newMessage').value;
+      fetch(apiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message })
+      })
+      .then(() => {
+        document.getElementById('newMessage').value = '';
+        fetchGreetings();
+      });
+    };
+
+    function deleteGreeting(id) {
+      fetch(`${apiUrl}/${id}`, { method: 'DELETE' })
+        .then(() => fetchGreetings());
+    }
+
+    function showEdit(id) {
+      document.getElementById(`msg-${id}`).style.display = 'none';
+      const input = document.getElementById(`edit-${id}`);
+      input.classList.remove('d-none');
+      document.getElementById(`save-${id}`).style.display = '';
+      document.getElementById(`cancel-${id}`).style.display = '';
+    }
+
+    function cancelEdit(id) {
+      document.getElementById(`msg-${id}`).style.display = '';
+      const input = document.getElementById(`edit-${id}`);
+      input.classList.add('d-none');
+      document.getElementById(`save-${id}`).style.display = 'none';
+      document.getElementById(`cancel-${id}`).style.display = 'none';
+    }
+
+    function saveEdit(id) {
+      const message = document.getElementById(`edit-${id}`).value;
+      fetch(`${apiUrl}/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message })
+      })
+      .then(() => fetchGreetings());
+    }
+
+    fetchGreetings();
+  </script>
+</body>
+</html>
