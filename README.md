@@ -1,4 +1,4 @@
-### ✅ Pull Request realizado por Darwin
+### ✅ Pull Request realizado por Paola
 
 - **Rama**: test-corea
 - **Título del PR**: `test: pruebas unitarias implementadas con Jest`
