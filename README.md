@@ -6,4 +6,3 @@
 - **Fecha**: 11 de junio de 2025
 - **Estado**: ✅ Merge completado sin conflictos
 
-### ✅ Pull Request realizado por Paola
