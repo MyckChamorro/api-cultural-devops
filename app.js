@@ -7,10 +7,11 @@ app.use(bodyParser.json());
 
 // Configura la conexión a MySQL
 const db = mysql.createConnection({
-  host: 'localhost',
+  host: 'tramway.proxy.rlwy.net',
   user: 'root',
-  password: 'root', // Cambia esto si tienes una contraseña
-  database: 'api_cult'
+  password: 'EJSkCKkFFiVSmCukWUXFmKmlpvbFJZUO', // Cambia esto si tienes una contraseña
+  database: 'railway',
+  port: 44552
 });
 
 db.connect(err => {
