@@ -7,6 +7,14 @@ app.use(bodyParser.json());
 const cors = require('cors');
 app.use(cors());
 
+
+const SLACK_WEBHOOK_URL = process.env.SLACK_WEBHOOK_URL || 'https://hooks.slack.com/services/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';
+
+function notifySlack(message) {
+  axios.post(SLACK_WEBHOOK_URL, { text: message })
+    .catch(err => console.error('Error enviando a Slack:', err));
+}
+
 // Configura la conexión a MySQL
 const db = mysql.createConnection({
   host: 'tramway.proxy.rlwy.net',
@@ -38,6 +46,7 @@ app.post('/greetings', (req, res) => {
   const { message } = req.body;
   db.query('INSERT INTO greetings (message) VALUES (?)', [message], (err, result) => {
     if (err) return res.status(500).json({ error: err.message });
+    notifySlack(`Nuevo saludo creado: "${message}" (ID: ${result.insertId})`);
     res.status(201).json({ id: result.insertId, message });
   });
 });
@@ -48,6 +57,7 @@ app.put('/greetings/:id', (req, res) => {
   const { message } = req.body;
   db.query('UPDATE greetings SET message = ? WHERE id = ?', [message, id], (err, result) => {
     if (err) return res.status(500).json({ error: err.message });
+    notifySlack(`Saludo actualizado: "${message}" (ID: ${id})`);
     res.json({ id, message });
   });
 });
@@ -57,6 +67,7 @@ app.delete('/greetings/:id', (req, res) => {
   const { id } = req.params;
   db.query('DELETE FROM greetings WHERE id = ?', [id], (err, result) => {
     if (err) return res.status(500).json({ error: err.message });
+    notifySlack(`Saludo eliminado: "${id}"`);
     res.json({ deleted: id });
   });
 });
