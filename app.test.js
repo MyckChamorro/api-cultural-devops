@@ -1,5 +1,6 @@
 const request = require('supertest');
-const { app, db } = require('./app');
+const app = require('./app');
+const db = require('./db');
 
 let greetingId;
 
