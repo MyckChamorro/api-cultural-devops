@@ -9,7 +9,8 @@ const cors = require('cors');
 app.use(cors());
 
 
-const SLACK_WEBHOOK_URL = process.env.SLACK_WEBHOOK_URL || 'https://hooks.slack.com/services/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';
+const SLACK_WEBHOOK_URL = process.env.SLACK_WEBHOOK_URL || 'https://hooks.slack.com/services/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';
+
 
 function notifySlack(message) {
   axios.post(SLACK_WEBHOOK_URL, { text: message })
