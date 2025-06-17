@@ -18,11 +18,11 @@ function notifySlack(message) {
 
 // Configura la conexión a MySQL
 const db = mysql.createConnection({
-  host: 'tramway.proxy.rlwy.net',
+  host: 'localhost',
   user: 'root',
-  password: 'EJSkCKkFFiVSmCukWUXFmKmlpvbFJZUO', // Cambia esto si tienes una contraseña
-  database: 'railway',
-  port: 44552
+  password: 'password', // Cambia esto si tienes una contraseña
+  database: 'api_cult_test',
+  port: 3306
 });
 
 db.connect(err => {
